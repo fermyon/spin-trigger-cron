@@ -1,0 +1,29 @@
+spin_manifest_version = 2
+
+[application]
+name = "cron-sample"
+authors = ["itowlson <ivan.towlson@fermyon.com>"]
+description = ""
+version = "0.1.0"
+
+[[trigger.cron]]
+component = "every2seconds"
+cron_expression = "1/2 * * * * *"
+
+[component.every2seconds]
+source = "target/wasm32-wasi/release/guest.wasm"
+[component.every2seconds.build]
+command = "cargo build --target wasm32-wasi --release"
+[component.every2seconds.variables]
+something = "2s"
+
+[[trigger.cron]]
+component = "every4seconds"
+cron_expression = "1/4 * * * * *"
+
+[component.every4seconds]
+source = "target/wasm32-wasi/release/guest.wasm"
+[component.every4seconds.build]
+command = "cargo build --target wasm32-wasi --release"
+[component.every4seconds.variables]
+something = "4s"

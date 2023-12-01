@@ -1,0 +1,17 @@
+package fermyon:spin-cron@2.0.0
+
+interface cron-types {
+
+    record metadata {
+        timestamp: u64,
+    }
+
+    variant error {
+        other(string),
+    }
+}
+
+world spin-cron {
+    use cron-types.{metadata, error}
+    export handle-cron-event: func(metadata: metadata) -> result<_, error>
+}
