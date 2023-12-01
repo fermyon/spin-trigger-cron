@@ -1,0 +1,14 @@
+[package]
+name = "spin-cron-sdk"
+version = { workspace = true }
+authors = { workspace = true }
+edition = { workspace = true }
+rust-version = "1.71"
+include = ["../cron.wit"]
+
+[lib]
+name = "spin_cron_sdk"
+
+[dependencies]
+spin-cron-macro = { path = "macro" }
+wit-bindgen = "0.13.0"

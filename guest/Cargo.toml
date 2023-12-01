@@ -1,16 +1,17 @@
 [package]
 name = "guest"
-version = "0.1.0"
-edition = "2021"
+version = { workspace = true }
+authors = { workspace = true }
+edition = { workspace = true }
+rust-version = "1.71"
 
 [lib]
-crate-type = [ "cdylib" ]
+crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1"
 bytes = "1"
 http = "0.2"
 spin-sdk = { git = "https://github.com/fermyon/spin", tag = "v2.0.1" }
+spin-cron-sdk = { git = "https://github.com/karthik2804/spin-trigger-cron" }
 wit-bindgen = "0.13.0"
-
-[workspace]

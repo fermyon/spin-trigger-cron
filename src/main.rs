@@ -15,6 +15,7 @@ use tokio::signal;
 use tokio_cron_scheduler::{Job, JobScheduler};
 
 wasmtime::component::bindgen!({
+    world: "spin-cron",
     path: "cron.wit",
     async: true
 });

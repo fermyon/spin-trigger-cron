@@ -15,3 +15,7 @@ world spin-cron {
     use cron-types.{metadata, error}
     export handle-cron-event: func(metadata: metadata) -> result<_, error>
 }
+
+world spin-cron-sdk {
+    import cron-types
+}
