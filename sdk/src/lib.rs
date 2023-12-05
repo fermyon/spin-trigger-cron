@@ -1,5 +1,6 @@
-pub use spin_cron_macro::*;
+pub use spin_cron_macro::cron_component;
 
+#[doc(hidden)]
 pub mod wit {
     #![allow(missing_docs)]
 
@@ -9,7 +10,10 @@ pub mod wit {
     });
 }
 
+#[doc(inline)]
 pub use wit::fermyon::spin_cron::cron_types::Error;
+#[doc(inline)]
 pub use wit::fermyon::spin_cron::cron_types::Metadata;
 
+#[doc(hidden)]
 pub use wit_bindgen;

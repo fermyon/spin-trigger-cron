@@ -1422,12 +1422,8 @@ checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
 name = "guest"
 version = "0.1.0"
 dependencies = [
- "anyhow",
- "bytes",
- "http",
  "spin-cron-sdk 0.1.0 (git+https://github.com/karthik2804/spin-trigger-cron)",
  "spin-sdk",
- "wit-bindgen",
 ]
 
 [[package]]
