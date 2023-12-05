@@ -9,9 +9,5 @@ rust-version = "1.71"
 crate-type = ["cdylib"]
 
 [dependencies]
-anyhow = "1"
-bytes = "1"
-http = "0.2"
 spin-sdk = { git = "https://github.com/fermyon/spin", tag = "v2.0.1" }
 spin-cron-sdk = { git = "https://github.com/karthik2804/spin-trigger-cron" }
-wit-bindgen = "0.13.0"

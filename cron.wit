@@ -1,7 +1,6 @@
 package fermyon:spin-cron@2.0.0
 
 interface cron-types {
-
     record metadata {
         timestamp: u64,
     }

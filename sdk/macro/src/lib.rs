@@ -16,24 +16,23 @@ pub fn cron_component(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 #preamble
             }
             impl self::preamble::Guest for preamble::Cron {
-                fn handle_cron_event(metadata: self::preamble::fermyon::spin_cron::cron_types::Metadata) -> Result<(), self::preamble::fermyon::spin_cron::cron_types::Error> {
-                    match super::#func_name(metadata.try_into().expect("cannot convert from Spin Cron payload")) {
-                        Ok(()) => Ok(()),
-                        Err(e) => {
+                fn handle_cron_event(metadata: self::preamble::fermyon::spin_cron::cron_types::Metadata) -> ::std::result::Result<(), self::preamble::fermyon::spin_cron::cron_types::Error> {
+                    match super::#func_name(::std::convert::TryInto::try_into(metadata).expect("cannot convert from Spin Cron payload")) {
+                        ::std::result::Result::Ok(()) => ::std::result::Result::Ok(()),
+                        ::std::result::Result::Err(e) => {
                             eprintln!("{}", e);
-                            Err(self::preamble::fermyon::spin_cron::cron_types::Error::Other(e.to_string()))
+                            ::std::result::Result::Err(self::preamble::fermyon::spin_cron::cron_types::Error::Other(e.to_string()))
                         },
                     }
                 }
-
             }
-            impl From<self::preamble::fermyon::spin_cron::cron_types::Metadata> for ::spin_cron_sdk::Metadata {
-                fn from(resp:self::preamble::fermyon::spin_cron::cron_types::Metadata ) -> Self  {
-                   Self { timestamp: resp.timestamp}
+            impl ::std::convert::From<self::preamble::fermyon::spin_cron::cron_types::Metadata> for ::spin_cron_sdk::Metadata {
+                fn from(metadata: self::preamble::fermyon::spin_cron::cron_types::Metadata) -> Self  {
+                   Self { timestamp: metadata.timestamp}
                 }
             }
 
-            impl From<self::preamble::fermyon::spin_cron::cron_types::Error> for ::spin_cron_sdk::Error {
+            impl ::std::convert::From<self::preamble::fermyon::spin_cron::cron_types::Error> for ::spin_cron_sdk::Error {
                 fn from(err: self::preamble::fermyon::spin_cron::cron_types::Error) -> Self {
                     match err {
                         self::preamble::fermyon::spin_cron::cron_types::Error::Other(e) => Self::Other(e)

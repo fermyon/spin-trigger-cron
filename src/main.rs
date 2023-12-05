@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Context, Result};
 use async_trait::async_trait;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
@@ -84,9 +84,9 @@ impl TriggerExecutor for CronTrigger {
     }
 
     async fn run(self, _config: Self::RunConfig) -> Result<()> {
-        let components = self.cron_components.clone();
+        let components = self.cron_components;
         let engine = Arc::new(self.engine);
-        _ = Self::start_cron_loop(engine.clone(), components).await;
+        Self::start_cron_loop(engine, components).await?;
 
         Ok(())
     }
@@ -99,11 +99,10 @@ impl CronTrigger {
     ) -> Result<()> {
         let mut sched = JobScheduler::new().await?;
         for component in components {
-            let component = component.clone();
             let engine = engine.clone();
             let _ = sched
                 .add(Job::new_async(
-                    component.clone().cron_expression.as_str(),
+                    component.cron_expression.clone().as_str(),
                     move |_uuid, _l| {
                         let processor = CronEventProcessor::new(engine.clone(), component.clone());
                         let timestamp: u64 = SystemTime::now()
@@ -160,6 +159,7 @@ impl CronEventProcessor {
     fn new(engine: Arc<TriggerAppEngine<CronTrigger>>, component: Component) -> Self {
         Self { engine, component }
     }
+
     async fn handle_cron_event(&self, metadata: cron::Metadata) -> anyhow::Result<()> {
         // Load the guest...
         let (instance, mut store) = self.engine.prepare_instance(&self.component.id).await?;
@@ -168,10 +168,10 @@ impl CronEventProcessor {
         };
         let instance = SpinCron::new(&mut store, &instance)?;
         // ...and call the entry point
-        let res = instance.call_handle_cron_event(&mut store, metadata).await;
-        match res {
-            Ok(_) => Ok(()),
-            Err(_) => Err(anyhow!("Component {} failed", self.component.id)),
-        }
+        let res = instance
+            .call_handle_cron_event(&mut store, metadata)
+            .await
+            .context("cron handler trapped")?;
+        res.map_err(|e| anyhow!("Component {} failed: {e}", self.component.id))
     }
 }
