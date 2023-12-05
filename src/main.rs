@@ -86,24 +86,23 @@ impl TriggerExecutor for CronTrigger {
     async fn run(self, _config: Self::RunConfig) -> Result<()> {
         let components = self.cron_components;
         let engine = Arc::new(self.engine);
-        Self::start_cron_loop(engine, components).await?;
-
-        Ok(())
+        Self::init_cron_scheduler(engine, components).await
     }
 }
 
 impl CronTrigger {
-    async fn start_cron_loop(
+    async fn init_cron_scheduler(
         engine: Arc<TriggerAppEngine<Self>>,
         components: Vec<Component>,
     ) -> Result<()> {
         let mut sched = JobScheduler::new().await?;
         for component in components {
+            tracing::info!("Adding component  \"{}\" to job scheduler", component.id);
             let engine = engine.clone();
             let _ = sched
                 .add(Job::new_async(
                     component.cron_expression.clone().as_str(),
-                    move |_uuid, _l| {
+                    move |_, _| {
                         let processor = CronEventProcessor::new(engine.clone(), component.clone());
                         let timestamp: u64 = SystemTime::now()
                             .duration_since(UNIX_EPOCH)
@@ -119,33 +118,21 @@ impl CronTrigger {
                 .await;
         }
 
-        sched.set_shutdown_handler(Box::new(|| {
-            Box::pin(async move {
-                println!("Shut down done");
-            })
-        }));
+        sched.start().await?;
+        tracing::info!("Job scheduler started");
 
-        _ = sched.start().await;
-
-        // Create a channel to receive Ctrl+C signal
-        let (ctrlc_sender, mut ctrlc_receiver) = tokio::sync::mpsc::channel::<()>(1);
-
-        // Spawn a task to listen for Ctrl+C signal
+        // Handle Ctrl + c
+        let (tx, rx) = tokio::sync::oneshot::channel::<()>();
         tokio::spawn(async move {
-            signal::ctrl_c().await.unwrap();
-            ctrlc_sender.send(()).await.unwrap();
+            signal::ctrl_c().await.expect("Failed to listen for Ctrl+C");
+            tracing::info!("Ctrl+C received - Terminating");
+            let _ = tx.send(());
         });
+        rx.await?;
 
-        // Run the cron scheduler and handle Ctrl+C signal
-        let mut running = true;
-        while running {
-            tokio::select! {
-                _ = ctrlc_receiver.recv() => {
-                    running = false;
-                    println!("Ctrl+C detected. Stopping the loop...");
-                },
-            }
-        }
+        sched.shutdown().await?;
+        tracing::info!("Job scheduler stopped");
+
         Ok(())
     }
 }
@@ -172,6 +159,9 @@ impl CronEventProcessor {
             .call_handle_cron_event(&mut store, metadata)
             .await
             .context("cron handler trapped")?;
-        res.map_err(|e| anyhow!("Component {} failed: {e}", self.component.id))
+        res.map_err(|e| {
+            tracing::error!("Component {} failed: {e}", self.component.id);
+            anyhow!("Component {} failed: {e}", self.component.id)
+        })
     }
 }
