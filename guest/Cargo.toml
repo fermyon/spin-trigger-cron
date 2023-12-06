@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 spin-sdk = { git = "https://github.com/fermyon/spin", tag = "v2.0.1" }
-spin-cron-sdk = { git = "https://github.com/karthik2804/spin-trigger-cron" }
+spin-cron-sdk = { git = "https://github.com/karthik2804/spin-trigger-cron/" }
