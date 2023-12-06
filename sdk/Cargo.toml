@@ -11,4 +11,4 @@ name = "spin_cron_sdk"
 
 [dependencies]
 spin-cron-macro = { path = "macro" }
-wit-bindgen = "0.13.0"
+wit-bindgen = "0.13.1"

@@ -1,4 +1,4 @@
-package fermyon:spin-cron@2.0.0
+package fermyon:spin-cron@2.0.0;
 
 interface cron-types {
     record metadata {
@@ -11,10 +11,10 @@ interface cron-types {
 }
 
 world spin-cron {
-    use cron-types.{metadata, error}
-    export handle-cron-event: func(metadata: metadata) -> result<_, error>
+    use cron-types.{metadata, error};
+    export handle-cron-event: func(metadata: metadata) -> result<_, error>;
 }
 
 world spin-cron-sdk {
-    import cron-types
+    import cron-types;
 }
