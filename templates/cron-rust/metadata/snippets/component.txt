@@ -1,0 +1,11 @@
+[[trigger.cron]]
+component = "{{project-name | kebab_case}}"
+cron_expression = "{{cron-expression}}"
+
+[component.{{project-name | kebab_case}}]
+source = "{{ output-path }}/target/wasm32-wasi/release/{{project-name | snake_case}}.wasm"
+allowed_outbound_hosts = []
+[component.{{project-name | kebab_case}}.build]
+command = "cargo build --target wasm32-wasi --release"
+workdir = "{{ output-path }}"
+watch = ["src/**/*.rs", "Cargo.toml"]

@@ -1,0 +1,13 @@
+manifest_version = "1"
+id = "cron-rust"
+description = "Cron event handler using Rust"
+tags = ["cron", "rust"]
+
+[add_component]
+skip_files = ["spin.toml"]
+[add_component.snippets]
+component = "component.txt"
+
+[parameters]
+project-description = { type = "string", prompt = "Description", default = "" }
+cron-expression = { type = "string", prompt = "Cron expression", default = "1/2 * * * * *" }
