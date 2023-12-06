@@ -104,7 +104,7 @@ jobs:
         run: ls -R
       - name: pluginify it
         run: |
-          spin pluginify --merge --release-url-base https://github.com/karthik2804/spin-trigger-crom/releases/download/${{ env.RELEASE_VERSION }}/ >${{ env.PROGRAM_NAME }}.json
+          spin pluginify --merge --release-url-base https://github.com/fermyon/spin-trigger-crom/releases/download/${{ env.RELEASE_VERSION }}/ >${{ env.PROGRAM_NAME }}.json
       - name: Display merged manifest
         run: cat ${{ env.PROGRAM_NAME }}.json
 
