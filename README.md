@@ -27,13 +27,13 @@ spin build --up
 
 ## Installing the template 
 
-The template can be installed using the following comman:
+You can install the template using the following command:
 
 ```bash
 spin templates install --git https://github.com/fermyon/spin-trigger-cron
 ```
 
-Once the template is installed, a new project can be instantiated using:
+Once the template is installed, you can create a new application using:
 
 ```bash
 spin new -t cron-rust hello_cron --accept-defaults
@@ -54,13 +54,13 @@ The following options are available to set in the [[trigger.cron]] section:
 
 | Name                  | Type             | Required? | Description |
 |-----------------------|------------------|-----------|-------------|
-| `component`           | string or table  | required  | The component to run when a queue message is received. (This is the standard Spin trigger component field.) |
-| `cron_expression`     | string           | required  | The `cron` expresison describing the interval at which the component is executed. |
+| `component`           | string or table  | required  | The component to run on the schedule given in `cron_expression`. (This is the standard Spin trigger component field.) |
+| `cron_expression`     | string           | required  | The `cron` expresison describing the schedule on which to execute the component. |
 
 ## Building Cron Components
 
-Currently only a rust SDK is supported for guest components. The `spin-cron-sdk` along with the [`spin-sdk`](github.com/fermyon/spin) can be used to build cron components. The guest code must have a function decorated with the `#[cron_component]` macro. See `guest/src/lib.rs` for an example in rust. 
+Currently only a Rust SDK is supported for guest components. The `spin-cron-sdk` along with the [`spin_sdk` crate](https://docs.rs/spin-sdk) can be used to build cron components. The guest code must have a function decorated with the `#[cron_component]` macro. See `guest/src/lib.rs` for an example in rust. 
 
 The signature of the function must be `fn handle_cron_event(metadata: Metadata) -> Result<(), Error>`.
 
-The `Metadata` object contains a singular field `timestamp` which contains the duration since `00:00:00 UTC on 1 January 1970` (epoch) in seconds.
+The `Metadata` object contains a single field `timestamp` which contains the duration since 00:00:00 UTC on 1 January 1970 (the Unix epoch) in seconds.
