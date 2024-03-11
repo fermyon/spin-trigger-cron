@@ -1,0 +1,18 @@
+spin_manifest_version = 2
+
+[application]
+name = "cron-sampl-py"
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+description = ""
+version = "0.1.0"
+
+[[trigger.cron]]
+component = "every2seconds"
+cron_expression = "1/2 * * * * *"
+
+[component.every2seconds]
+source = "app.wasm"
+[component.every2seconds.build]
+command = "componentize-py -d ../cron.wit -w spin-cron componentize -m spin_sdk=spin-imports app -o app.wasm"
+[component.every2seconds.variables]
+something = "2s"

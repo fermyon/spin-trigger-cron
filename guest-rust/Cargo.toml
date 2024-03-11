@@ -9,7 +9,7 @@ rust-version = "1.71"
 crate-type = ["cdylib"]
 
 [dependencies]
-spin-sdk = { git = "https://github.com/fermyon/spin", tag = "v2.0.1" }
-spin-cron-sdk = { git = "https://github.com/fermyon/spin-trigger-cron/" }
+spin-sdk = "3.0.0"
+spin-cron-sdk = { path = "../sdk" }
 
 [workspace]
