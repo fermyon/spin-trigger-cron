@@ -27,3 +27,6 @@ tokio-cron-scheduler = "0.9.4"
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3.7", features = ["env-filter"] }
 wasmtime = { version = "18.0.1" }
+
+[workspace.dependencies]
+wit-bindgen = "0.16.0"
