@@ -3,7 +3,7 @@ name = "trigger-cron"
 version = { workspace = true }
 authors = { workspace = true }
 edition = { workspace = true }
-rust-version = "1.71"
+rust-version = "1.73"
 
 [workspace.package]
 version = "0.1.0"
