@@ -10,10 +10,6 @@ name = "spin_cron_macro"
 proc-macro = true
 
 [dependencies]
-anyhow = "1"
-bytes = "1"
-http = "0.2"
 proc-macro2 = "1"
 quote = "1.0"
 syn = { version = "1.0", features = ["full"] }
-wit-bindgen = { workspace = true }

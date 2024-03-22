@@ -1,6 +1,9 @@
 pub use spin_cron_macro::cron_component;
 
 #[doc(hidden)]
+pub use spin_executor as executor;
+
+#[doc(hidden)]
 pub mod wit {
     #![allow(missing_docs)]
 

@@ -7,6 +7,7 @@ const WIT_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cron.wit");
 pub fn cron_component(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let func = syn::parse_macro_input!(item as syn::ItemFn);
     let func_name = &func.sig.ident;
+    let await_postfix = func.sig.asyncness.map(|_| quote!(.await));
     let preamble = preamble();
 
     quote!(
@@ -17,13 +18,15 @@ pub fn cron_component(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
             impl self::preamble::Guest for preamble::Cron {
                 fn handle_cron_event(metadata: ::spin_cron_sdk::Metadata) -> ::std::result::Result<(), ::spin_cron_sdk::Error> {
-                    match super::#func_name(metadata) {
-                        ::std::result::Result::Ok(()) => ::std::result::Result::Ok(()),
-                        ::std::result::Result::Err(e) => {
-                            eprintln!("{}", e);
-                            ::std::result::Result::Err(::spin_cron_sdk::Error::Other(e.to_string()))
-                        },
-                    }
+                    ::spin_cron_sdk::executor::run(async move {
+                        match super::#func_name(metadata)#await_postfix {
+                            ::std::result::Result::Ok(()) => ::std::result::Result::Ok(()),
+                            ::std::result::Result::Err(e) => {
+                                eprintln!("{}", e);
+                                ::std::result::Result::Err(::spin_cron_sdk::Error::Other(e.to_string()))
+                            },
+                        }
+                    })
                 }
             }
         }
