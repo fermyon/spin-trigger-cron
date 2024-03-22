@@ -10,5 +10,6 @@ include = ["../cron.wit"]
 name = "spin_cron_sdk"
 
 [dependencies]
+spin-executor = "3.0.1"
 spin-cron-macro = { path = "macro" }
 wit-bindgen = { workspace = true }

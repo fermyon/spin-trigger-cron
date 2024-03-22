@@ -172,17 +172,6 @@ dependencies = [
 
 [[package]]
 name = "http"
-version = "0.2.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8947b1a6fad4393052c7ba1f4cd97bed3e953a95c79c92ad9b051a04611d9fbb"
-dependencies = [
- "bytes",
- "fnv",
- "itoa",
-]
-
-[[package]]
-name = "http"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "21b9ddb458710bc376481b842f5da65cdf31522de232c1ca8146abce2a358258"
@@ -376,13 +365,9 @@ dependencies = [
 name = "spin-cron-macro"
 version = "0.1.0"
 dependencies = [
- "anyhow",
- "bytes",
- "http 0.2.11",
  "proc-macro2",
  "quote",
  "syn 1.0.109",
- "wit-bindgen",
 ]
 
 [[package]]
@@ -390,6 +375,18 @@ name = "spin-cron-sdk"
 version = "0.1.0"
 dependencies = [
  "spin-cron-macro",
+ "spin-executor",
+ "wit-bindgen",
+]
+
+[[package]]
+name = "spin-executor"
+version = "3.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2df1a5e2cc70a628c9ea6914770c234cc4a292218091e6707ae8be68b4a5de76"
+dependencies = [
+ "futures",
+ "once_cell",
  "wit-bindgen",
 ]
 
@@ -417,7 +414,7 @@ dependencies = [
  "bytes",
  "form_urlencoded",
  "futures",
- "http 1.1.0",
+ "http",
  "once_cell",
  "routefinder",
  "serde",
