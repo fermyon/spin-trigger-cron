@@ -392,9 +392,9 @@ dependencies = [
 
 [[package]]
 name = "spin-macro"
-version = "3.0.0"
+version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a161ae2fefde8582ef555ead81d87cf897cd31a23a1d1e0c22a9c43fd9af421a"
+checksum = "ef3d03e5a205a641d85ace3af1604b39dba63d3ffe3865a71bda02fb482ae60a"
 dependencies = [
  "anyhow",
  "bytes",
@@ -405,9 +405,9 @@ dependencies = [
 
 [[package]]
 name = "spin-sdk"
-version = "3.0.0"
+version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2c02cf00c243c03fb330cb5be7bf4eb3c8db7c5476425068c7385ddff1567aa"
+checksum = "ed97f54a15f2d8b1fa15e436d88bacb95a5b379a3e0f8fbd8042eb8696ca048a"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -419,6 +419,7 @@ dependencies = [
  "routefinder",
  "serde",
  "serde_json",
+ "spin-executor",
  "spin-macro",
  "thiserror",
  "wit-bindgen",
