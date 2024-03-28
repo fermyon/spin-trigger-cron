@@ -28,5 +28,10 @@ tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3.7", features = ["env-filter"] }
 wasmtime = { version = "18.0.1" }
 
+[target.'cfg(target_os = "linux")'.dependencies]
+# This needs to be an explicit dependency to enable
+# '--features openssl/vendored', which is used for Linux releases.
+openssl = { version = "0.10" }
+
 [workspace.dependencies]
 wit-bindgen = "0.16.0"
