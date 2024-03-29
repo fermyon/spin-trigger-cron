@@ -1,7 +1,8 @@
 use anyhow::{anyhow, Context, Result};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use spin_trigger::{cli::NoArgs, EitherInstance, TriggerAppEngine, TriggerExecutor};
+use spin_core::InstancePre;
+use spin_trigger::{cli::NoArgs, TriggerAppEngine, TriggerExecutor};
 use std::{
     sync::Arc,
     time::{SystemTime, UNIX_EPOCH},
@@ -49,6 +50,7 @@ impl TriggerExecutor for CronTrigger {
     type RuntimeData = RuntimeData;
     type TriggerConfig = CronTriggerConfig;
     type RunConfig = NoArgs;
+    type InstancePre = InstancePre<RuntimeData>;
 
     async fn new(engine: TriggerAppEngine<Self>) -> Result<Self> {
         let cron_components = engine
@@ -132,9 +134,6 @@ impl CronEventProcessor {
     async fn handle_cron_event(&self, metadata: cron::Metadata) -> anyhow::Result<()> {
         // Load the guest...
         let (instance, mut store) = self.engine.prepare_instance(&self.component.id).await?;
-        let EitherInstance::Component(instance) = instance else {
-            unreachable!()
-        };
         let instance = SpinCron::new(&mut store, &instance)?;
         // ...and call the entry point
         let res = instance
