@@ -59,11 +59,19 @@ The following options are available to set in the [[trigger.cron]] section:
 
 ### Cron Expression Fields
 
-The `cron_expression` format for scheduling is as follows:
+The `cron_expression` fields are as follows:
 
 ```text
-sec   min   hour   day of month   month   day of week   year
-*     *     *      *              *       *             *
+#  ┌──────────── sec (0–59)
+#  |  ┌───────────── min (0–59)
+#  |  │  ┌───────────── hour (0–23)
+#  |  │  │  ┌───────────── day of month (1–31)
+#  |  │  │  │  ┌───────────── month (1–12)
+#  |  │  │  │  │  ┌───────────── day of week (0–6)
+#  |  │  │  │  │  |  ┌─────────────- year
+#  |  │  │  │  │  |  │
+#  |  │  │  │  │  |  │
+   *  *  *  *  *  *  * 
 ```
 
 ### Cron Expression Characters
