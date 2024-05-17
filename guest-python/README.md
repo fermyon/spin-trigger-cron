@@ -4,7 +4,7 @@
 
 ```bash
 python3 -m venv venv
-source activate venv/bin/activate
+source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
@@ -12,7 +12,7 @@ To generate bindings to use with intellisense
 
 ```bash
 componentize-py -d ../cron.wit -w spin-cron bindings bindings
-mv binding/spin_cron ./
+mv bindings/spin_cron ./
 rm -r bindings
 ```
 
