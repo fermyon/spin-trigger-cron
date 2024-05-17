@@ -68,7 +68,7 @@ sec   min   hour   day of month   month   day of week   year
 
 ### Cron Expression Characters
 
-The `*` indicates that every value applies; i.e., if `sec` is set to `*`, then every second will trigger execution.
+The `*` indicates that every value applies. For example, if `sec` is set to `*`, then every second will trigger execution.
 The `/` indicates increments. For example, if `sec` is set to `0/15`, then starting at `0`, the trigger will be executed every 15 seconds.
 The `,` separates values. For example, if `sec` is set to `2,8`, then the trigger will execute only on the 2nd and 8th seconds of every minute.
 The `-` indicates range, i.e., if the `sec` is set to `5-10`, then the trigger will execute only on the 5th, 6th, 7th, 8th, 9th, and 10th seconds of each minute.
