@@ -1,9 +1,9 @@
 use clap::Parser;
-use spin_trigger::cli::TriggerExecutorCommand;
+use spin_trigger::cli::FactorsTriggerCommand;
 use std::io::IsTerminal;
 use trigger_cron::CronTrigger;
 
-type Command = TriggerExecutorCommand<CronTrigger>;
+type Command = FactorsTriggerCommand<CronTrigger>;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
