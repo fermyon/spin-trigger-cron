@@ -1,8 +1,6 @@
 use anyhow::{anyhow, Context, Result};
-use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use spin_core::InstancePre;
-use spin_trigger::{cli::NoArgs, TriggerAppEngine, TriggerExecutor};
+use spin_trigger::{cli::NoCliArgs, App, Trigger, TriggerApp};
 use std::{
     sync::Arc,
     time::{SystemTime, UNIX_EPOCH},
@@ -18,10 +16,7 @@ wasmtime::component::bindgen!({
 
 use fermyon::spin_cron::cron_types as cron;
 
-pub(crate) type RuntimeData = ();
-
 pub struct CronTrigger {
-    engine: TriggerAppEngine<Self>,
     cron_components: Vec<Component>,
 }
 
@@ -44,38 +39,37 @@ struct TriggerMetadata {
     r#type: String,
 }
 
-#[async_trait]
-impl TriggerExecutor for CronTrigger {
-    const TRIGGER_TYPE: &'static str = "cron";
-    type RuntimeData = RuntimeData;
-    type TriggerConfig = CronTriggerConfig;
-    type RunConfig = NoArgs;
-    type InstancePre = InstancePre<RuntimeData>;
+impl Trigger for CronTrigger {
+    const TYPE: &'static str = "cron";
 
-    async fn new(engine: TriggerAppEngine<Self>) -> Result<Self> {
-        let cron_components = engine
-            .trigger_configs()
+    type CliArgs = NoCliArgs;
+
+    type InstanceState = ();
+
+    fn new(_cli_args: Self::CliArgs, app: &App) -> anyhow::Result<Self> {
+        let cron_components = app
+            .trigger_configs::<CronTriggerConfig>(Self::TYPE)?
+            .into_iter()
             .map(|(_, config)| Component {
                 id: config.component.clone(),
                 cron_expression: config.cron_expression.clone(),
             })
             .collect();
-        Ok(Self {
-            engine,
-            cron_components,
-        })
+        Ok(Self { cron_components })
     }
 
-    async fn run(self, _config: Self::RunConfig) -> Result<()> {
+    fn run(
+        self,
+        trigger_app: TriggerApp<Self>,
+    ) -> impl std::future::Future<Output = anyhow::Result<()>> + Send {
         let components = self.cron_components;
-        let engine = Arc::new(self.engine);
-        Self::init_cron_scheduler(engine, components).await
+        Self::init_cron_scheduler(trigger_app.into(), components)
     }
 }
 
 impl CronTrigger {
     async fn init_cron_scheduler(
-        engine: Arc<TriggerAppEngine<Self>>,
+        engine: Arc<TriggerApp<Self>>,
         components: Vec<Component>,
     ) -> anyhow::Result<()> {
         let mut sched = JobScheduler::new().await?;
@@ -122,18 +116,22 @@ impl CronTrigger {
 }
 
 pub struct CronEventProcessor {
-    engine: Arc<TriggerAppEngine<CronTrigger>>,
+    trigger_app: Arc<TriggerApp<CronTrigger>>,
     component: Component,
 }
 
 impl CronEventProcessor {
-    fn new(engine: Arc<TriggerAppEngine<CronTrigger>>, component: Component) -> Self {
-        Self { engine, component }
+    fn new(trigger_app: Arc<TriggerApp<CronTrigger>>, component: Component) -> Self {
+        Self {
+            trigger_app,
+            component,
+        }
     }
 
     async fn handle_cron_event(&self, metadata: cron::Metadata) -> anyhow::Result<()> {
         // Load the guest...
-        let (instance, mut store) = self.engine.prepare_instance(&self.component.id).await?;
+        let instance_builder = self.trigger_app.prepare(&self.component.id)?;
+        let (instance, mut store) = instance_builder.instantiate(()).await?;
         let instance = SpinCron::new(&mut store, &instance)?;
         // ...and call the entry point
         let res = instance

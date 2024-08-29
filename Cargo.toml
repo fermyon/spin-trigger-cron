@@ -7,7 +7,7 @@ rust-version = "1.73"
 
 [workspace.package]
 version = "0.1.0"
-authors = ["Karthik Ganeshram <karthik.ganeshram@fermyon.com>"]
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
 edition = "2021"
 
 [workspace]
@@ -20,13 +20,12 @@ anyhow = "1.0.75"
 async-trait = "0.1"
 clap = { version = "3.1.15", features = ["derive", "env"] }
 serde = "1.0"
-spin-core = { git = "https://github.com/fermyon/spin", tag = "v2.4.0" }
-spin-trigger = { git = "https://github.com/fermyon/spin", tag = "v2.4.0" }
+spin-trigger = { git = "https://github.com/fermyon/spin" }
 tokio = { version = "1.37", features = ["full"] }
 tokio-cron-scheduler = "0.9.4"
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3.7", features = ["env-filter"] }
-wasmtime = { version = "18.0.1" }
+wasmtime = { version = "22.0.0" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 # This needs to be an explicit dependency to enable
