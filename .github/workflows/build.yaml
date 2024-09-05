@@ -62,7 +62,7 @@ jobs:
       - name: Pluginify plugin binary
         run: spin pluginify --arch ${{ matrix.config.arch }}
       - name: Archive pluginified
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PROGRAM_NAME}}-${{ matrix.config.os }}-${{ matrix.config.arch }}
           path: |
@@ -97,7 +97,9 @@ jobs:
         run: echo "RELEASE_VERSION=precanary" >> $GITHUB_ENV
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ env.PROGRAM_NAME}}-*
       - name: Display structure of downloaded files
         run: ls -R
       - name: pluginify it
